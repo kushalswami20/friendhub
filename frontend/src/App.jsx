@@ -1,17 +1,23 @@
-import { useState } from 'react'
-import { BrowserRouter, Routes, Route , Router,Navigate} from "react-router-dom";
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Signup from './components/Signup'
+import { useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Router,
+  Navigate,
+} from "react-router-dom";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import Signup from "./components/Signup";
 
-import Login from './components/Login'
-import Home from './components/Home'
+import Login from "./components/Login";
+import Home from "./components/Home";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
   const isAuthenticated = () => {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem("token");
   };
 
   // Protected Route wrapper
@@ -22,34 +28,33 @@ function App() {
     return children;
   };
 
-
   return (
     <>
-    <BrowserRouter>
-        
+      <BrowserRouter>
         <Routes>
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
-            } 
+            }
           />
           {/* Add other routes as needed */}
           <Route path="/login" element={<Login />} />
-         
-          
-          <Route path="/signup" element={
-            <ProtectedRoute>
-              <Signup />
-            </ProtectedRoute>
-          } />
+
+          <Route
+            path="/signup"
+            element={
+              <ProtectedRoute>
+                <Signup />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
     </>
   );
 }
-
 
 export default App;

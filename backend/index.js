@@ -10,7 +10,7 @@ const app = express();
 
 // middleware
 app.use(cors({
-    origin: ['http://localhost:5173','https://merabestie.com','https://hosteecommerce.vercel.app','https://sellerassignment.vercel.app/'], 
+    origin: ['http://localhost:5173','https://friendhub-six.vercel.app'], 
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']

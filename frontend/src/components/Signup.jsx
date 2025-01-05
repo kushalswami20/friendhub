@@ -26,7 +26,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/user/signup", {
+      const response = await fetch("https://friendhub-backend.onrender.com/user/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

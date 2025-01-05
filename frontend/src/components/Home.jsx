@@ -1,30 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Users, UserPlus, UserMinus, UserCheck, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import Navbar from './shared/Navbar'
+import Navbar from "./shared/Navbar";
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState('friends');
+  const [activeTab, setActiveTab] = useState("friends");
   const [friends, setFriends] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [friendRequests, setFriendRequests] = useState({
     received: [],
-    sent: []
+    sent: [],
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const BASE_URL = 'http://localhost:3000/friend';
+  const BASE_URL = "https://friendhub-backend.onrender.com/friend";
 
   const getAuthHeader = () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     return {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     };
   };
 
@@ -32,18 +38,18 @@ const Home = () => {
   const fetchFriends = async () => {
     try {
       const response = await fetch(`${BASE_URL}/list`, {
-        method: 'GET',
-        headers: getAuthHeader()
+        method: "GET",
+        headers: getAuthHeader(),
       });
       const data = await response.json();
       if (response.ok) {
         setFriends(data.friends || []);
       } else {
-        throw new Error(data.message || 'Failed to fetch friends');
+        throw new Error(data.message || "Failed to fetch friends");
       }
     } catch (err) {
-      console.error('Fetch friends error:', err);
-      setError('Failed to fetch friends list');
+      console.error("Fetch friends error:", err);
+      setError("Failed to fetch friends list");
     }
   };
 
@@ -51,18 +57,18 @@ const Home = () => {
   const fetchRecommendations = async () => {
     try {
       const response = await fetch(`${BASE_URL}/recommendations`, {
-        method: 'GET',
-        headers: getAuthHeader()
+        method: "GET",
+        headers: getAuthHeader(),
       });
       const data = await response.json();
       if (response.ok) {
         setRecommendations(data.recommendations || []);
       } else {
-        throw new Error(data.message || 'Failed to fetch recommendations');
+        throw new Error(data.message || "Failed to fetch recommendations");
       }
     } catch (err) {
-      console.error('Fetch recommendations error:', err);
-      setError('Failed to fetch recommendations');
+      console.error("Fetch recommendations error:", err);
+      setError("Failed to fetch recommendations");
     }
   };
 
@@ -71,23 +77,23 @@ const Home = () => {
     setLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/requests`, {
-        method: 'GET',
-        headers: getAuthHeader()
+        method: "GET",
+        headers: getAuthHeader(),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch requests');
+        throw new Error(errorData.message || "Failed to fetch requests");
       }
 
       const data = await response.json();
       setFriendRequests({
         received: data.receivedRequests || [],
-        sent: data.sentRequests || []
+        sent: data.sentRequests || [],
       });
     } catch (err) {
-      console.error('Fetch requests error:', err);
-      setError('Failed to fetch friend requests');
+      console.error("Fetch requests error:", err);
+      setError("Failed to fetch friend requests");
     } finally {
       setLoading(false);
     }
@@ -97,34 +103,37 @@ const Home = () => {
   const handleSendRequest = async (recipientId) => {
     try {
       const response = await fetch(`${BASE_URL}/request`, {
-        method: 'POST',
+        method: "POST",
         headers: getAuthHeader(),
-        body: JSON.stringify({ recipientId })
+        body: JSON.stringify({ recipientId }),
       });
       const data = await response.json();
       if (response.ok) {
         fetchFriendRequests();
         fetchRecommendations();
       } else {
-        throw new Error(data.message || 'Failed to send request');
+        throw new Error(data.message || "Failed to send request");
       }
     } catch (err) {
-      console.error('Send request error:', err);
-      setError('Failed to send friend request');
+      console.error("Send request error:", err);
+      setError("Failed to send friend request");
     }
   };
 
   // Handle friend request actions (accept/reject)
   const handleRequestAction = async (requestId, action) => {
     try {
-      const response = await fetch(`${BASE_URL}/request/${requestId}/${action}`, {
-        method: 'PUT',
-        headers: getAuthHeader()
-      });
+      const response = await fetch(
+        `${BASE_URL}/request/${requestId}/${action}`,
+        {
+          method: "PUT",
+          headers: getAuthHeader(),
+        }
+      );
       const data = await response.json();
       if (response.ok) {
         fetchFriendRequests();
-        if (action === 'accept') fetchFriends();
+        if (action === "accept") fetchFriends();
       } else {
         throw new Error(data.message || `Failed to ${action} request`);
       }
@@ -138,25 +147,25 @@ const Home = () => {
   const handleCancelRequest = async (requestId) => {
     try {
       const response = await fetch(`${BASE_URL}/request/${requestId}`, {
-        method: 'DELETE',
-        headers: getAuthHeader()
+        method: "DELETE",
+        headers: getAuthHeader(),
       });
       const data = await response.json();
       if (response.ok) {
         fetchFriendRequests();
       } else {
-        throw new Error(data.message || 'Failed to cancel request');
+        throw new Error(data.message || "Failed to cancel request");
       }
     } catch (err) {
-      console.error('Cancel request error:', err);
-      setError('Failed to cancel friend request');
+      console.error("Cancel request error:", err);
+      setError("Failed to cancel friend request");
     }
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError('Please login to view friends');
+      setError("Please login to view friends");
       return;
     }
 
@@ -166,10 +175,10 @@ const Home = () => {
         await Promise.all([
           fetchFriends(),
           fetchRecommendations(),
-          fetchFriendRequests()
+          fetchFriendRequests(),
         ]);
       } catch (err) {
-        console.error('Initial fetch error:', err);
+        console.error("Initial fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -191,7 +200,7 @@ const Home = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
-        <Navbar />
+      <Navbar />
       {error && (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
@@ -204,23 +213,31 @@ const Home = () => {
             <Users className="h-4 w-4" />
             Friends
             {friends.length > 0 && (
-              <Badge variant="secondary" className="ml-2">{friends.length}</Badge>
+              <Badge variant="secondary" className="ml-2">
+                {friends.length}
+              </Badge>
             )}
           </TabsTrigger>
           <TabsTrigger value="requests" className="flex items-center gap-2">
             <UserCheck className="h-4 w-4" />
             Requests
-            {(friendRequests.received.length > 0 || friendRequests.sent.length > 0) && (
+            {(friendRequests.received.length > 0 ||
+              friendRequests.sent.length > 0) && (
               <Badge variant="secondary" className="ml-2">
                 {friendRequests.received.length + friendRequests.sent.length}
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="recommendations" className="flex items-center gap-2">
+          <TabsTrigger
+            value="recommendations"
+            className="flex items-center gap-2"
+          >
             <UserPlus className="h-4 w-4" />
             Suggested
             {recommendations.length > 0 && (
-              <Badge variant="secondary" className="ml-2">{recommendations.length}</Badge>
+              <Badge variant="secondary" className="ml-2">
+                {recommendations.length}
+              </Badge>
             )}
           </TabsTrigger>
         </TabsList>
@@ -236,20 +253,28 @@ const Home = () => {
                 <div className="text-center py-8 text-gray-500">
                   <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>No friends added yet</p>
-                  <p className="text-sm">Check out the suggestions tab to find people you may know</p>
+                  <p className="text-sm">
+                    Check out the suggestions tab to find people you may know
+                  </p>
                 </div>
               ) : (
-                friends.map(friend => (
-                  <div key={friend._id} 
-                       className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent transition-colors">
+                friends.map((friend) => (
+                  <div
+                    key={friend._id}
+                    className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent transition-colors"
+                  >
                     <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
                       <span className="text-lg font-medium">
                         {friend.firstname[0]}
                       </span>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium">{friend.firstname} {friend.lastname}</p>
-                      <p className="text-sm text-gray-500">@{friend.username}</p>
+                      <p className="font-medium">
+                        {friend.firstname} {friend.lastname}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        @{friend.username}
+                      </p>
                     </div>
                   </div>
                 ))
@@ -263,7 +288,9 @@ const Home = () => {
           <Card>
             <CardHeader>
               <CardTitle>Received Requests</CardTitle>
-              <CardDescription>People who want to connect with you</CardDescription>
+              <CardDescription>
+                People who want to connect with you
+              </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
               {friendRequests.received.length === 0 ? (
@@ -272,9 +299,11 @@ const Home = () => {
                   <p>No pending requests</p>
                 </div>
               ) : (
-                friendRequests.received.map(request => (
-                  <div key={request._id} 
-                       className="flex items-center gap-4 p-4 rounded-lg border bg-card">
+                friendRequests.received.map((request) => (
+                  <div
+                    key={request._id}
+                    className="flex items-center gap-4 p-4 rounded-lg border bg-card"
+                  >
                     <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
                       <span className="text-lg font-medium">
                         {request.sender.firstname[0]}
@@ -284,18 +313,24 @@ const Home = () => {
                       <p className="font-medium">
                         {request.sender.firstname} {request.sender.lastname}
                       </p>
-                      <p className="text-sm text-gray-500">@{request.sender.username}</p>
+                      <p className="text-sm text-gray-500">
+                        @{request.sender.username}
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <Button
                         variant="default"
-                        onClick={() => handleRequestAction(request._id, 'accept')}
+                        onClick={() =>
+                          handleRequestAction(request._id, "accept")
+                        }
                       >
                         Accept
                       </Button>
                       <Button
                         variant="outline"
-                        onClick={() => handleRequestAction(request._id, 'reject')}
+                        onClick={() =>
+                          handleRequestAction(request._id, "reject")
+                        }
                       >
                         Decline
                       </Button>
@@ -310,7 +345,9 @@ const Home = () => {
           <Card>
             <CardHeader>
               <CardTitle>Sent Requests</CardTitle>
-              <CardDescription>People you've invited to connect</CardDescription>
+              <CardDescription>
+                People you've invited to connect
+              </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
               {friendRequests.sent.length === 0 ? (
@@ -319,9 +356,11 @@ const Home = () => {
                   <p>No sent requests</p>
                 </div>
               ) : (
-                friendRequests.sent.map(request => (
-                  <div key={request._id} 
-                       className="flex items-center gap-4 p-4 rounded-lg border bg-card">
+                friendRequests.sent.map((request) => (
+                  <div
+                    key={request._id}
+                    className="flex items-center gap-4 p-4 rounded-lg border bg-card"
+                  >
                     <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
                       <span className="text-lg font-medium">
                         {request.recipient.firstname[0]}
@@ -329,9 +368,12 @@ const Home = () => {
                     </div>
                     <div className="flex-1">
                       <p className="font-medium">
-                        {request.recipient.firstname} {request.recipient.lastname}
+                        {request.recipient.firstname}{" "}
+                        {request.recipient.lastname}
                       </p>
-                      <p className="text-sm text-gray-500">@{request.recipient.username}</p>
+                      <p className="text-sm text-gray-500">
+                        @{request.recipient.username}
+                      </p>
                     </div>
                     <Button
                       variant="outline"
@@ -351,7 +393,9 @@ const Home = () => {
           <Card>
             <CardHeader>
               <CardTitle>Suggested Friends</CardTitle>
-              <CardDescription>People you might know based on your connections</CardDescription>
+              <CardDescription>
+                People you might know based on your connections
+              </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
               {recommendations.length === 0 ? (
@@ -360,18 +404,25 @@ const Home = () => {
                   <p>No recommendations available</p>
                 </div>
               ) : (
-                recommendations.map(user => (
-                  <div key={user._id} 
-                       className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent transition-colors">
+                recommendations.map((user) => (
+                  <div
+                    key={user._id}
+                    className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent transition-colors"
+                  >
                     <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-lg font-medium">{user.firstname[0]}</span>
+                      <span className="text-lg font-medium">
+                        {user.firstname[0]}
+                      </span>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium">{user.firstname} {user.lastname}</p>
+                      <p className="font-medium">
+                        {user.firstname} {user.lastname}
+                      </p>
                       <p className="text-sm text-gray-500">@{user.username}</p>
                       {user.mutualFriendsCount > 0 && (
                         <Badge variant="secondary" className="mt-1">
-                          {user.mutualFriendsCount} mutual friend{user.mutualFriendsCount !== 1 ? 's' : ''}
+                          {user.mutualFriendsCount} mutual friend
+                          {user.mutualFriendsCount !== 1 ? "s" : ""}
                         </Badge>
                       )}
                     </div>
