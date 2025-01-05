@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , Link} from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 
@@ -110,17 +111,17 @@ const Login = () => {
           )}
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
-          <div className="text-sm text-center text-gray-500">
-            Don't have an account?{" "}
-            <Button 
-              variant="link" 
-              className="p-0 h-auto font-semibold text-primary hover:text-primary/80"
-              onClick={() => navigate('/signup')}
-            >
-              Sign up
-            </Button>
-          </div>
-        </CardFooter>
+                          <div className="text-sm text-center text-gray-500">
+                            Don't have an account?{" "}
+                            <Button 
+                              variant="link" 
+                              className="p-0 h-auto font-semibold text-primary hover:text-primary/80"
+                              onClick={() => navigate('/signup')}
+                            >
+                              signup
+                            </Button>
+                          </div>
+                        </CardFooter>
       </Card>
     </div>
   );

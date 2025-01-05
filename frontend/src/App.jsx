@@ -15,7 +15,7 @@ import Login from "./components/Login";
 import Home from "./components/Home";
 
 function App() {
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   const isAuthenticated = () => {
     return !!localStorage.getItem("token");
   };
@@ -43,14 +43,7 @@ function App() {
           {/* Add other routes as needed */}
           <Route path="/login" element={<Login />} />
 
-          <Route
-            path="/signup"
-            element={
-              <ProtectedRoute>
-                <Signup />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/signup" element={<Signup />}/>
         </Routes>
       </BrowserRouter>
     </>

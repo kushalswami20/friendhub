@@ -5,16 +5,20 @@ import dotenv from "dotenv";
 import userroute from "./routes/user.route.js";
 import friendroute from "./routes/friend.route.js";
 import mongoose from 'mongoose';
+dotenv.config();
 
 const app = express();
 
 // middleware
 app.use(cors({
     origin: ['http://localhost:5173','https://friendhub-six.vercel.app'], 
+    
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    maxAge: 86400 // Cache preflight request for 24 hours
+  }));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
